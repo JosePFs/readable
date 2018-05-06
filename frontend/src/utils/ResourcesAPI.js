@@ -13,4 +13,32 @@ const headers = {
 export const getAllCategories = () =>
   fetch(`${api}/categories`, { headers })
     .then(res => res.json())
-    .then(data => data.categories)
+    .then(data => data.categories);
+
+export const getAllPosts = () =>
+  fetch(`${api}/posts`, { headers })
+    .then(res => res.json());
+
+export const getPostComments = (post) =>
+  fetch(`${api}/posts/${post.id}/comments`, { headers })
+    .then(res => res.json());
+
+export const upVotePost = (post) =>
+  fetch(`${api}/posts/${post.id}`, {
+    method: 'POST',
+    headers: {
+      ...headers,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ option: "upVote" })
+  }).then(res => res.json());
+
+export const downVotePost = (post) =>
+  fetch(`${api}/posts/${post.id}`, {
+    method: 'POST',
+    headers: {
+      ...headers,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ option: "downVote" })
+  }).then(res => res.json());

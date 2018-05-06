@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import AddIcon from 'react-icons/lib/fa/plus-circle';
+import AddIcon from 'react-icons/lib/fa/plus';
+import MinusIcon from 'react-icons/lib/fa/minus';
 import Select from 'react-select';
-import { selectCategory } from '../actions'
+import { selectCategory, upVotePost, downVotePost } from '../actions'
 
 class App extends Component {
   state = {
@@ -33,8 +34,41 @@ class App extends Component {
     this.setState({ selectedOrder });
   }
 
+  sortFunction = (postA, postB) => {
+    if (this.state.selectedOrder.value === 'timestamp') {
+      return this.orderByDate(postA, postB);
+    }
+    return this.orderByVotes(postA, postB);
+  };
+
+  orderByDate = (postA, postB) => {
+    if (postA.timestamp > postB.timestamp) {
+      return -1;
+    }
+    if (postA.timestamp < postB.timestamp) {
+      return 1;
+    }
+    return 0;
+  };
+
+  orderByVotes = (postA, postB) => {
+    if (postA.voteScore > postB.voteScore) {
+      return -1;
+    }
+    if (postA.voteScore < postB.voteScore) {
+      return 1;
+    }
+    return 0;
+  };
+
   render() {
-    const { categories, selectedCategory } = this.props;
+    const {
+      categories,
+      selectedCategory,
+      posts,
+      increaseVotePost,
+      decreaseVotePost
+    } = this.props;
     const { orders, selectedOrder } = this.state;
 
     return (
@@ -67,21 +101,59 @@ class App extends Component {
               <AddIcon size={30}/>
           </button>
         </div>
+        <div className='content'>
+          <ul className='posts'>
+            {posts.filter(post => (
+              selectedCategory.value === 'all' || post.category === selectedCategory.value)
+            ).sort(this.sortFunction)
+            .map((post) => (
+              <li key={post.id} className='post'>
+                <div>
+                  <span>{post.title} </span>
+                  <small>
+                    ({new Date(Number(post.timestamp)).getFullYear()}-
+                    {("0" + new Date(Number(post.timestamp)).getMonth()).substr(-2)}-
+                    {("0" + new Date(Number(post.timestamp)).getDay()).substr(-2)})                  
+                  </small>
+                </div>
+                <p>Comments {post.commentCount}</p>
+                <div>
+                  <span>Vote score {post.voteScore}</span>
+                  <div className='vote-btns'>
+                    <button
+                      className='icon-btn'
+                      onClick={() => increaseVotePost(post)}>
+                        <AddIcon size={15}/>
+                    </button>|
+                    <button
+                      className='icon-btn'
+                      onClick={() => decreaseVotePost(post)}>
+                        <MinusIcon size={15}/>
+                    </button>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     )
   }
 }
 
-function mapStateToProps ({ categories, posts, comments }) {
+function mapStateToProps ({ categories, posts }) {
   return {
     categories: categories.categories,
-    selectedCategory: categories.selected
+    selectedCategory: categories.selected,
+    posts: posts.posts
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    selectCategory: category => dispatch(selectCategory(category)) 
+    selectCategory: category => dispatch(selectCategory(category)),
+    increaseVotePost: post => dispatch(upVotePost(post)),
+    decreaseVotePost: post => dispatch(downVotePost(post)),
   }
 }
 

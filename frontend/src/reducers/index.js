@@ -3,7 +3,10 @@ import { capitalize } from '../utils/helpers';
 
 import {
   RECEIVE_CATEGORIES,
-  SELECT_CATEGORY
+  SELECT_CATEGORY,
+  RECEIVE_POSTS,
+  UP_VOTE_POST,
+  DOWN_VOTE_POST
 } from '../actions'
 
 function categories (state = {categories: [], selected: ''}, action) {
@@ -30,15 +33,35 @@ function categories (state = {categories: [], selected: ''}, action) {
   }
 }
 
-function posts (state = {}, action) {
-  switch (action.type) {
-    default :
-      return state;
-  }
-}
+function posts (state = {posts: []}, action) {
+  const { posts, post } = action;
 
-function comments (state = {}, action) {
   switch (action.type) {
+    case RECEIVE_POSTS:
+      return {
+        ...state,
+        posts
+      };
+    case UP_VOTE_POST:
+      return {
+        ...state,
+        posts: state.posts.map(postElement => {
+          if (postElement.id === post.id) {
+            return post;
+          }
+          return postElement;
+        })
+      };
+    case DOWN_VOTE_POST:
+      return {
+        ...state,
+        posts: state.posts.map(postElement => {
+          if (postElement.id === post.id) {
+            return post;
+          }
+          return postElement;
+        })
+      };
     default :
       return state;
   }
@@ -46,6 +69,5 @@ function comments (state = {}, action) {
 
 export default combineReducers({
   categories,
-  posts,
-  comments,
+  posts
 })
