@@ -1,0 +1,35 @@
+{
+  "name": "readable",
+  "version": "0.0.1",
+  "description": "Audacity React NanoDegree - Redux",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JosePFs/readable.git"
+  },
+  "author": "José Puente Fuentes",
+  "contributors": [
+    "José Puente <jpuentefs@gmail.com>"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "prop-types": "^15.6.0",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "react-icons": "^2.2.7",
+    "react-modal": "^2.2.2",
+    "react-redux": "^5.0.5",
+    "react-router-dom": "^4.2.2",
+    "react-select": "^2.0.0-beta.2",
+    "redux": "^3.7.2",
+    "redux-thunk": "^2.2.0"
+  },
+  "devDependencies": {
+    "react-scripts": "1.0.10"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
