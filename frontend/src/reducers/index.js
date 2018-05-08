@@ -12,7 +12,7 @@ import {
 } from '../actions'
 
 function categories (state = {categories: [], selected: ''}, action) {
-  const { categories } = action;
+  const { categories, category } = action;
 
   switch (action.type) {
     case RECEIVE_CATEGORIES:
@@ -25,7 +25,6 @@ function categories (state = {categories: [], selected: ''}, action) {
         selected: optionsCategoryFormated[0]
       };
     case SELECT_CATEGORY:
-      const { category } = action;
       return {
         ...state,
         selected: category

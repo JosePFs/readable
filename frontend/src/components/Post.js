@@ -12,7 +12,7 @@ import { upVotePost, downVotePost } from '../actions';
 class Post extends Component {
 
   render() {
-    const { selectedPost, increaseVotePost, decreaseVotePost, comments } = this.props;
+    const { selectedPost, increaseVotePost, decreaseVotePost } = this.props;
 
     if (!selectedPost) {
       return <Redirect to='/'/>
@@ -67,7 +67,7 @@ class Post extends Component {
                       Add comment
                   </button>
                 </div>
-                <CommentsList comments={comments.comments} />
+                <CommentsList />
               </div>}
         </div>
       </div>
@@ -75,11 +75,10 @@ class Post extends Component {
   }
 }
 
-function mapStateToProps ({ posts, comments }) {
+function mapStateToProps ({ posts }) {
   const post = posts.posts.find(post => post.id === posts.selected.id);
   return {
-    selectedPost: post,
-    comments
+    selectedPost: post
   }
 }
 
