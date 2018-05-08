@@ -8,7 +8,9 @@ import {
   UP_VOTE_POST,
   DOWN_VOTE_POST,
   SELECT_POST,
-  RECEIVE_COMMENTS
+  RECEIVE_COMMENTS,
+  UP_VOTE_COMMENT,
+  DOWN_VOTE_COMMENT
 } from '../actions'
 
 function categories (state = {categories: [], selected: ''}, action) {
@@ -74,13 +76,33 @@ function posts (state = {posts: []}, action) {
 }
 
 function comments (state = {comments: []}, action) {
-  const { comments } = action;
+  const { comments, comment } = action;
 
   switch (action.type) {
     case RECEIVE_COMMENTS:
       return {
         ...state,
         comments
+      };
+    case UP_VOTE_COMMENT:
+      return {
+        ...state,
+        comments: state.comments.map(commentElement => {
+          if (commentElement.id === comment.id) {
+            return comment;
+          }
+          return commentElement;
+        })
+      };
+    case DOWN_VOTE_COMMENT:
+      return {
+        ...state,
+        comments: state.comments.map(commentElement => {
+          if (commentElement.id === comment.id) {
+            return comment;
+          }
+          return commentElement;
+        })
       };
     default :
       return state;

@@ -108,6 +108,10 @@ li {
   margin: 15px 3px;
 }
 
+.text-btn-wrapper {
+  margin-top: 30px;
+}
+
 .text-btn {
   border: 1px solid #ccc;
   cursor: pointer;
@@ -122,8 +126,47 @@ li {
   background-color: lightblue;
 }
 
-.text-btn-wrapper {
-  margin-top: 30px;
+.text-btn--cancel:hover {
+  background-color: #ccc;
+}
+
+.comment-form {
+  margin: 15px 0;
+}
+
+.comment-form-btns {
+  margin: 10px 0;
+}
+
+.comment-separator {
+  margin-top: 20px;
+}
+
+.text-input {
+  height: 30px;
+  line-height: 20px;
+}
+
+.comment-form .text-input {
+  width: 50%;
+  border-radius: 4px;
+  padding: 5px;
+  font-size: 1.1rem;
+}
+
+.text-btn--fixed {
+  width: 80px;
+  margin-right: 10px;
+}
+
+.label-text-input {
+  width: 100%;
+  display: block; 
+}
+
+.text-btn:disabled {
+  background: #ddd;
+  cursor: auto;
 }
 
 .add-comment,

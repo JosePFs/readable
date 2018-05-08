@@ -7,12 +7,22 @@ import EditIcon from 'react-icons/lib/fa/pencil';
 import ArrowLeftIcon from 'react-icons/lib/fa/arrow-circle-left';
 import CommentsList from './CommentsList';
 import Vote from './Vote';
+import Datetime from './Datetime';
 import { upVotePost, downVotePost } from '../actions';
+import { CommentForm } from './CommentForm';
 
 class Post extends Component {
 
+  state = {
+    addingComment: false
+  }
+
+  showAddComment = () => this.setState({ addingComment: true });
+  hideAddComment = () => this.setState({ addingComment: false });
+
   render() {
-    const { selectedPost, increaseVotePost, decreaseVotePost } = this.props;
+    const { selectedPost, increaseVote, decreaseVote } = this.props;
+    const { addingComment } = this.state;
 
     if (!selectedPost) {
       return <Redirect to='/'/>
@@ -42,31 +52,23 @@ class Post extends Component {
                 <h3>{selectedPost.title}</h3>
                 <p>{selectedPost.body}</p>
                 <p>{selectedPost.author}
-                  <small className='selectedPost-date'>
-                    <span className='time-date'>
-                      {new Date(Number(selectedPost.timestamp)).getFullYear()}-
-                      {("0" + new Date(Number(selectedPost.timestamp)).getMonth()).substr(-2)}-
-                      {("0" + new Date(Number(selectedPost.timestamp)).getDay()).substr(-2)}
-                    </span>
-                    <span className='time-date'>
-                      {("0" + new Date(Number(selectedPost.timestamp)).getHours()).substr(-2)}:
-                      {("0" + new Date(Number(selectedPost.timestamp)).getMinutes()).substr(-2)}:
-                      {("0" + new Date(Number(selectedPost.timestamp)).getSeconds()).substr(-2)}
-                    </span>
-                  </small>
+                <Datetime timestamp={selectedPost.timestamp} />
                 </p>
                 <Vote 
                   item={selectedPost}
-                  onIncrease={() => increaseVotePost(selectedPost)}
-                  onDecrease={() => decreaseVotePost(selectedPost)}
+                  onIncrease={() => increaseVote(selectedPost)}
+                  onDecrease={() => decreaseVote(selectedPost)}
                 />
                 <div className='text-btn-wrapper'>
-                  <button
+                  <button disabled={addingComment}
                     className='text-btn'
-                    onClick={() => {}}>
+                    onClick={this.showAddComment}>
                       Add comment
                   </button>
                 </div>
+                {addingComment && (
+                  <CommentForm onCancel={this.hideAddComment} />
+                )}
                 <CommentsList />
               </div>}
         </div>
@@ -84,8 +86,8 @@ function mapStateToProps ({ posts }) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    increaseVotePost: post => dispatch(upVotePost(post)),
-    decreaseVotePost: post => dispatch(downVotePost(post)),
+    increaseVote: post => dispatch(upVotePost(post)),
+    decreaseVote: post => dispatch(downVotePost(post)),
   }
 }
 

@@ -42,3 +42,23 @@ export const downVotePost = (post) =>
     },
     body: JSON.stringify({ option: "downVote" })
   }).then(res => res.json());
+
+export const upVoteComment = (comment) =>
+  fetch(`${api}/comments/${comment.id}`, {
+    method: 'POST',
+    headers: {
+      ...headers,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ option: "upVote" })
+  }).then(res => res.json());
+
+export const downVoteComment = (comment) =>
+  fetch(`${api}/comments/${comment.id}`, {
+    method: 'POST',
+    headers: {
+      ...headers,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ option: "downVote" })
+  }).then(res => res.json());

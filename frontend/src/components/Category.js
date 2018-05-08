@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import Select from 'react-select';
 import { selectCategory, upVotePost, downVotePost, selectPost, fetchComments } from '../actions';
 import Vote from './Vote';
+import Datetime from './Datetime';
 
 class Category extends Component {
   state = {
@@ -115,11 +116,7 @@ class Category extends Component {
               <li key={post.id} className='post'>
                 <div>
                   <Link onClick={() => this.handlePostSelection(post)} to='/post'>{post.title}</Link>
-                  <small className='post-date'>
-                    ({new Date(Number(post.timestamp)).getFullYear()}-
-                    {("0" + new Date(Number(post.timestamp)).getMonth()).substr(-2)}-
-                    {("0" + new Date(Number(post.timestamp)).getDay()).substr(-2)})                  
-                  </small>
+                  <Datetime timestamp={post.timestamp} />
                 </div>
                 <p>Comments {post.commentCount}</p>
                 <Vote 
