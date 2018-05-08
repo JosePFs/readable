@@ -6,7 +6,9 @@ import {
   SELECT_CATEGORY,
   RECEIVE_POSTS,
   UP_VOTE_POST,
-  DOWN_VOTE_POST
+  DOWN_VOTE_POST,
+  SELECT_POST,
+  RECEIVE_COMMENTS
 } from '../actions'
 
 function categories (state = {categories: [], selected: ''}, action) {
@@ -62,6 +64,25 @@ function posts (state = {posts: []}, action) {
           return postElement;
         })
       };
+    case SELECT_POST:
+      return {
+        ...state,
+        selected: post
+      };
+    default :
+      return state;
+  }
+}
+
+function comments (state = {comments: []}, action) {
+  const { comments } = action;
+
+  switch (action.type) {
+    case RECEIVE_COMMENTS:
+      return {
+        ...state,
+        comments
+      };
     default :
       return state;
   }
@@ -69,5 +90,6 @@ function posts (state = {posts: []}, action) {
 
 export default combineReducers({
   categories,
-  posts
+  posts,
+  comments
 })

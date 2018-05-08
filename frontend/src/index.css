@@ -84,6 +84,15 @@ li {
   border-radius: 4px;
 }
 
+.time-date,
+.post-date {
+  margin-left: 5px;
+}
+
+.time-date {
+  font-style: italic;
+}
+
 .vote-btns {
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -92,6 +101,36 @@ li {
   margin-left: 8px;
 }
 
-.vote-btns .icon-btn {
+.content-post {
+  padding: 15px 15px 30px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin: 15px 3px;
+}
+
+.text-btn {
+  border: 1px solid #ccc;
+  cursor: pointer;
+  padding: 10px;
+  background: none;
+  color: #343434;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.text-btn:hover {
+  background-color: lightblue;
+}
+
+.text-btn-wrapper {
+  margin-top: 30px;
+}
+
+.add-comment,
+.content-post h3,
+.content-post p,
+.content-post span,
+.back-btn,
+.icon-btn {
   color: #343434;
 }

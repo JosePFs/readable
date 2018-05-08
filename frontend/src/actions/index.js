@@ -5,6 +5,8 @@ export const SELECT_CATEGORY = 'SELECT_CATEGORY';
 export const RECEIVE_POSTS = 'RECEIVE_POSTS';
 export const UP_VOTE_POST = 'UP_VOTE_POST';
 export const DOWN_VOTE_POST = 'DOWN_VOTE_POST';
+export const SELECT_POST = 'SELECT_POST';
+export const RECEIVE_COMMENTS = 'RECEIVE_COMMENTS';
 
 export const receiveCategories = categories => ({
   type: RECEIVE_CATEGORIES,
@@ -49,4 +51,19 @@ export const decreaseVotePost = post => ({
 export const downVotePost = (post) => dispatch => (
     ResourcesAPI.downVotePost(post)
     .then(post => dispatch(decreaseVotePost(post)))
+);
+
+export const selectPost = post => ({
+  type: SELECT_POST,
+  post
+});
+
+export const receiveComments = comments => ({
+  type: RECEIVE_COMMENTS,
+  comments
+});
+
+export const fetchComments = (post) => dispatch => (
+    ResourcesAPI.getPostComments(post)
+    .then(comments => dispatch(receiveComments(comments)))
 );

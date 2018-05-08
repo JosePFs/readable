@@ -12,7 +12,6 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "prop-types": "^15.6.0",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-icons": "^2.2.7",
