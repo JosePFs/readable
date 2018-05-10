@@ -101,11 +101,7 @@ class Category extends Component {
               options={orders}
             />
           </div>
-          <button
-            className='text-btn'
-            onClick={this.addPost}>
-              Add Post 
-          </button>
+          <Link to='/addpost' className='text-btn'>Add Post</Link>
         </div>
         <div className='content'>
           <ul className='posts'>

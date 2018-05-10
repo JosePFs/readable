@@ -3,6 +3,7 @@ import { Route } from "react-router-dom";
 
 import Category from './Category'; 
 import Post from './Post'; 
+import PostForm from './PostForm';
 
 class App extends Component {
   render() {
@@ -13,6 +14,9 @@ class App extends Component {
         )}/>
         <Route path='/post' render={() => (
           <Post />
+        )}/>
+        <Route path='/addpost' render={() => (
+          <PostForm />
         )}/>
       </div>
     )

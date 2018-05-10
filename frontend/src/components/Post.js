@@ -31,14 +31,14 @@ class Post extends Component {
     return (
       <div className='container'>
         <div className='nav'>
-          <Link to='/' className='back-btn'><ArrowLeftIcon size={25}/></Link>
+          <Link to='/' className='back-btn'><ArrowLeftIcon size={25}/> Back</Link>
           <div className='post-btns'>
-            <button
+            <button title='Edit'
               className='icon-btn'
               onClick={() => {}}>
                 <EditIcon size={15}/>
             </button>|
-            <button
+            <button title='Delete'
               className='icon-btn'
               onClick={() => {}}>
                 <MinusIcon size={15}/>
