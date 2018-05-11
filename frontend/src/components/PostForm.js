@@ -11,8 +11,14 @@ export class PostForm extends Component {
     title: '',
     author: '',
     body: '',
-    category: '',
+    categorySelected: '',
     voteScore: 1
+  }
+
+  componentDidMount() {
+    const { category } = this.props;
+    const { categorySelected } = this.state;
+    this.setState({categorySelected: category});
   }
 
   handleSubmit = (event) => {
@@ -38,13 +44,13 @@ export class PostForm extends Component {
     this.setState({ body: event.target.value });
   }
 
-  handleChangeCategory = (category) => {
-    this.setState({ category });
+  handleChangeCategory = (categorySelected) => {
+    this.setState({ categorySelected });
   }
 
   render() {
-    const { categories } = this.props;
-    const { title, author, body, category } = this.state;
+    const { categories, category } = this.props;
+    const { title, author, body, categorySelected } = this.state;
 
     return (
       <div className='container'>
@@ -73,7 +79,7 @@ export class PostForm extends Component {
             <Select className='category-selector'
               name="form-field-categories"
               placeholder={'Categories'}
-              value={category}
+              value={categorySelected}
               onChange={this.handleChangeCategory}
               options={categories}
             />
@@ -91,7 +97,8 @@ export class PostForm extends Component {
 
 function mapStateToProps ({ categories }) {
   return {
-    categories: categories.categories.slice(1)
+    categories: categories.categories.slice(1),
+    category: categories.selected.value !== 'all' ? categories.selected : ''  
   }
 }
 
