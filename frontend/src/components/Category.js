@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Redirect } from "react-router";
 import { connect } from 'react-redux';
 import Select from 'react-select';
+
 import { 
   selectCategory,
   upVotePost,

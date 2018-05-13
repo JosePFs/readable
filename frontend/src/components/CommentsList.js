@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import Datetime from './Datetime';
 import Vote from './Vote';
 import Comment from './Comment';

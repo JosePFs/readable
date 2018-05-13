@@ -4,6 +4,7 @@ import Select from 'react-select';
 import { Link, withRouter } from "react-router-dom";
 import ArrowLeftIcon from 'react-icons/lib/fa/arrow-circle-left';
 import uuidv1 from 'uuid/v1';
+
 import { savePost, updatePost } from '../actions';
 import { capitalize } from '../utils/helpers';
 

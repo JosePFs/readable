@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
 import ArrowLeftIcon from 'react-icons/lib/fa/arrow-circle-left';
@@ -10,7 +10,6 @@ import Datetime from './Datetime';
 import Actions from './Actions';
 import { upVotePost, downVotePost, deletePost } from '../actions';
 import CommentForm from './CommentForm';
-import { withRouter } from 'react-router-dom';
 import { capitalize } from '../utils/helpers';
 
 class Post extends Component {
