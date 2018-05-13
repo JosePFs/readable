@@ -1,6 +1,7 @@
 import * as ResourcesAPI from '../utils/ResourcesAPI';
 
 export const RECEIVE_CATEGORIES = 'RECEIVE_CATEGORIES';
+export const RECEIVE_CATEGORY_POSTS = 'RECEIVE_CATEGORY_POSTS';
 export const SELECT_CATEGORY = 'SELECT_CATEGORY';
 export const RECEIVE_POSTS = 'RECEIVE_POSTS';
 export const RECEIVE_POST = 'RECEIVE_POST';
@@ -27,10 +28,21 @@ export const fetchCategories = () => dispatch => (
     .then(categories => dispatch(receiveCategories(categories)))
 );
 
+export const receiveCategoryPosts = posts => ({
+  type: RECEIVE_CATEGORY_POSTS,
+  posts
+});
+
+export const fetchCategoryPosts = (category) => dispatch => (
+    ResourcesAPI.getCategoryPosts(category)
+    .then(posts => dispatch(receiveCategoryPosts(posts)))
+);
+
 export const selectCategory = category => ({
   type: SELECT_CATEGORY,
   category
 });
+
 
 export const receivePosts = posts => ({
   type: RECEIVE_POSTS,
@@ -49,7 +61,9 @@ export const receivePost = post => ({
 
 export const getPost = (postId) => dispatch => (
     ResourcesAPI.getPost(postId)
-    .then(post => dispatch(receivePost(post)))
+    .then(post => {
+      dispatch(selectPost(post));
+    })
 );
 
 export const increaseVotePost = post => ({

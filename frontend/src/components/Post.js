@@ -8,7 +8,7 @@ import CommentsList from './CommentsList';
 import Vote from './Vote';
 import Datetime from './Datetime';
 import Actions from './Actions';
-import { upVotePost, downVotePost, deletePost } from '../actions';
+import { upVotePost, downVotePost, deletePost, getPost } from '../actions';
 import CommentForm from './CommentForm';
 import { capitalize } from '../utils/helpers';
 
@@ -16,6 +16,13 @@ class Post extends Component {
 
   state = {
     addingComment: false
+  }
+
+  componentDidMount() {
+    const { params, getPost } = this.props;
+    if (params.category && params.postId) {
+      getPost(params.postId);
+    }
   }
 
   showAddComment = () => this.setState({ addingComment: true });
@@ -35,7 +42,7 @@ class Post extends Component {
     const { addingComment } = this.state;
 
     if (!selectedPost) {
-      return <Redirect to='/'/>
+      return <Redirect to='/post/was/not/found' />;
     }
 
     return (
@@ -48,42 +55,40 @@ class Post extends Component {
             onEdit={() => this.editPost(selectedPost)}
             onDelete={() => this.deletePost(selectedPost)} 
           />
-          {!selectedPost
-            ? <div>No post selected</div> 
-            : <div>
-                <h3 className='post-category'>{selectedPost.title}</h3><small>[{capitalize(selectedPost.category)}]</small>
-                <p>{selectedPost.body}</p>
-                <p>{selectedPost.author} -
-                <Datetime timestamp={selectedPost.timestamp} />
-                </p>
-                <Vote 
-                  item={selectedPost}
-                  onIncrease={() => increaseVote(selectedPost)}
-                  onDecrease={() => decreaseVote(selectedPost)}
-                />
-                <div className='text-btn-wrapper'>
-                  <button disabled={addingComment}
-                    className='text-btn'
-                    onClick={this.showAddComment}>
-                      Add comment
-                  </button>
-                </div>
-                {addingComment && (
-                  <CommentForm onClose={this.hideAddComment} />
-                )}
-                <CommentsList />
-              </div>}
+          <div>
+            <h3 className='post-category'>{selectedPost.title}</h3><small>[{capitalize(selectedPost.category)}]</small>
+            <p>{selectedPost.body}</p>
+            <p>{selectedPost.author} -
+            <Datetime timestamp={selectedPost.timestamp} />
+            </p>
+            <Vote 
+              item={selectedPost}
+              onIncrease={() => increaseVote(selectedPost)}
+              onDecrease={() => decreaseVote(selectedPost)}
+            />
+            <div className='text-btn-wrapper'>
+              <button disabled={addingComment}
+                className='text-btn'
+                onClick={this.showAddComment}>
+                  Add comment
+              </button>
+            </div>
+            {addingComment && (
+              <CommentForm onClose={this.hideAddComment} />
+            )}
+            <CommentsList />
+            </div>
         </div>
       </div>
     )
   }
 }
 
-function mapStateToProps ({ posts, categories }) {
-  const post = posts.posts.find(post => post.id === posts.selected.id);
+function mapStateToProps ({ posts, categories }, { match: { params } }) {
   return {
-    selectedPost: post,
-    category: categories.selected
+    selectedPost: posts.selected,
+    category: categories.selected,
+    params
   }
 }
 
@@ -91,7 +96,8 @@ function mapDispatchToProps (dispatch) {
   return {
     increaseVote: post => dispatch(upVotePost(post)),
     decreaseVote: post => dispatch(downVotePost(post)),
-    deletePost: post => dispatch(deletePost(post))
+    deletePost: post => dispatch(deletePost(post)),
+    getPost: postId => dispatch(getPost(postId))
   }
 }
 

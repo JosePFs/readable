@@ -7,7 +7,7 @@ import thunk from 'redux-thunk';
 
 import './index.css';
 import App from './components/App';
-import { fetchCategories, fetchPosts } from './actions';
+import { fetchCategories } from './actions';
 import reducer from './reducers';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -20,7 +20,6 @@ const store = createStore(
 );
 
 store.dispatch(fetchCategories());
-store.dispatch(fetchPosts());
 
 ReactDOM.render(
   <Provider store={store}>

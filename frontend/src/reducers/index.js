@@ -3,6 +3,7 @@ import { capitalize } from '../utils/helpers';
 
 import {
   RECEIVE_CATEGORIES,
+  RECEIVE_CATEGORY_POSTS,
   SELECT_CATEGORY,
   RECEIVE_POSTS,
   RECEIVE_POST,
@@ -47,6 +48,7 @@ function posts (state = {posts: []}, action) {
   const { posts, post, comment } = action;
 
   switch (action.type) {
+    case RECEIVE_CATEGORY_POSTS:    
     case RECEIVE_POSTS:
       return {
         ...state,
@@ -127,15 +129,6 @@ function comments (state = {comments: []}, action) {
         comments
       };
     case UP_VOTE_COMMENT:
-      return {
-        ...state,
-        comments: state.comments.map(commentElement => {
-          if (commentElement.id === comment.id) {
-            return comment;
-          }
-          return commentElement;
-        })
-      };
     case DOWN_VOTE_COMMENT:
       return {
         ...state,

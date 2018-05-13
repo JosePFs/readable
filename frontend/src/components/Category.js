@@ -10,7 +10,8 @@ import {
   downVotePost,
   selectPost,
   fetchComments,
-  deletePost
+  deletePost,
+  fetchPosts
 } from '../actions';
 import Vote from './Vote';
 import Datetime from './Datetime';
@@ -32,6 +33,11 @@ class Category extends Component {
       orders: orders,
       selectedOrder: orders[0]
     });
+    if (this.props.params.category && this.props.params.category !== 'all') {
+      this.props.getCategoryPosts(this.props.params.category);
+    } else {
+      this.props.getAllPosts();
+    }
     this.props.selectPost('');
   }
 
@@ -128,28 +134,31 @@ class Category extends Component {
         </div>
         <div className='content'>
           <ul className='posts'>
-            {posts.filter(post => (
-              selectedCategory.value === 'all' || post.category === selectedCategory.value)
-            ).sort(this.sortFunction)
-            .map((post) => (
-              <li key={post.id} className='post'>
-                <div>
-                  <Actions 
-                    onEdit={() => this.editPost(post)}
-                    onDelete={() => this.deletePost(post)} 
+            {posts.length > 0 
+              ? posts.filter(post => (
+                selectedCategory.value === 'all' || post.category === selectedCategory.value)
+              ).sort(this.sortFunction)
+              .map((post) => (
+                <li key={post.id} className='post'>
+                  <div>
+                    <Actions 
+                      onEdit={() => this.editPost(post)}
+                      onDelete={() => this.deletePost(post)} 
+                    />
+                    <Link onClick={() => this.handlePostSelection(post)} to={`/${post.category}/${post.id}`}>{post.title}</Link>
+                    <small className='post-author'>[{post.author} -</small>
+                    <Datetime timestamp={post.timestamp} />]
+                  </div>
+                  <p>Comments {post.commentCount}</p>
+                  <Vote 
+                    item={post}
+                    onIncrease={() => increaseVotePost(post)}
+                    onDecrease={() => decreaseVotePost(post)}
                   />
-                  <Link onClick={() => this.handlePostSelection(post)} to={`/${post.category}/${post.id}`}>{post.title}</Link>
-                  <small className='post-author'>[{post.author} -</small>
-                  <Datetime timestamp={post.timestamp} />]
-                </div>
-                <p>Comments {post.commentCount}</p>
-                <Vote 
-                  item={post}
-                  onIncrease={() => increaseVotePost(post)}
-                  onDecrease={() => decreaseVotePost(post)}
-                />
-              </li>
-            ))}
+                </li>
+              ))
+              : <div className='content-post'>No posts found</div>
+            }
           </ul>
         </div>
       </div>
@@ -165,7 +174,8 @@ function mapStateToProps ({ categories, posts }, { match: { params} }) {
   return {
     categories: categories.categories,
     selectedCategory,
-    posts: posts.posts
+    posts: posts.posts,
+    params
   }
 }
 
@@ -174,7 +184,9 @@ function mapDispatchToProps (dispatch) {
     selectCategory: category => dispatch(selectCategory(category)),
     increaseVotePost: post => dispatch(upVotePost(post)),
     decreaseVotePost: post => dispatch(downVotePost(post)),
-    selectPost: post => dispatch(selectPost(post)), 
+    getAllPosts: () => dispatch(fetchPosts()),
+    getCategoryPosts: () => dispatch(fetchPosts()),
+    selectPost: post => dispatch(selectPost(post)),
     getComments: post => dispatch(fetchComments(post)),
     deletePost: post => dispatch(deletePost(post))
   }
