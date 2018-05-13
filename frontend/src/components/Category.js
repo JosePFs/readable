@@ -107,6 +107,10 @@ class Category extends Component {
       return <Redirect to='/category/was/not/found' />;
     }
 
+    const filteredPosts = posts.filter(post => (
+      selectedCategory.value === 'all' || post.category === selectedCategory.value)
+    );
+
     return (
       <div className='container'>
         <div className='nav'>
@@ -134,10 +138,8 @@ class Category extends Component {
         </div>
         <div className='content'>
           <ul className='posts'>
-            {posts.length > 0 
-              ? posts.filter(post => (
-                selectedCategory.value === 'all' || post.category === selectedCategory.value)
-              ).sort(this.sortFunction)
+            {filteredPosts.length > 0 
+              ? filteredPosts.sort(this.sortFunction)
               .map((post) => (
                 <li key={post.id} className='post'>
                   <div>
