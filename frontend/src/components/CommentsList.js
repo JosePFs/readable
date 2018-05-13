@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Datetime from './Datetime';
 import Vote from './Vote';
+import Comment from './Comment';
 import { upVoteComment, downVoteComment } from '../actions';
 
 export class CommentsList extends Component {
+
   render() {
     const { comments, increaseVote, decreaseVote } = this.props;
 
@@ -13,8 +15,8 @@ export class CommentsList extends Component {
       {comments && comments.map((comment) => (
         <li key={comment.id}>
           <hr className='comment-separator' />
-          <p>{comment.body}</p>
-          <p>{comment.author}
+          <Comment comment={comment} />
+          <p>{comment.author} -
             <Datetime timestamp={comment.timestamp} />
           </p>          
           <Vote 

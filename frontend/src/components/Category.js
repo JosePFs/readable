@@ -1,10 +1,20 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
+import { Redirect } from "react-router";
 import { connect } from 'react-redux';
 import Select from 'react-select';
-import { selectCategory, upVotePost, downVotePost, selectPost, fetchComments } from '../actions';
+import { 
+  selectCategory,
+  upVotePost,
+  downVotePost,
+  selectPost,
+  fetchComments,
+  deletePost
+} from '../actions';
 import Vote from './Vote';
 import Datetime from './Datetime';
+import Actions from './Actions';
+import { capitalize } from '../utils/helpers';
 
 class Category extends Component {
   state = {
@@ -21,14 +31,21 @@ class Category extends Component {
       orders: orders,
       selectedOrder: orders[0]
     });
+    this.props.selectPost('');
   }
 
-  addPost = () => {
-    
+  deletePost = (post) => {
+    this.props.deletePost(post);
+  }
+
+  editPost = (post) => {
+    this.props.selectPost(post);
+    this.props.history.push(`/edit/post/${post.id}`);
   }
 
   handleChangeCategory = (selectedCategory) => {
     this.props.selectCategory(selectedCategory);
+    this.props.history.push(`/${selectedCategory.value}`);
   }
 
   handleChangeOrder = (selectedOrder) => {
@@ -78,6 +95,11 @@ class Category extends Component {
     } = this.props;
     const { orders, selectedOrder } = this.state;
 
+    if (categories.length > 0  &&
+       !categories.find(element => element.value === selectedCategory.value)) {
+      return <Redirect to='/category/was/not/found' />;
+    }
+
     return (
       <div className='container'>
         <div className='nav'>
@@ -101,7 +123,7 @@ class Category extends Component {
               options={orders}
             />
           </div>
-          <Link to='/addpost' className='text-btn'>Add Post</Link>
+          <Link to='/add/new/post' className='text-btn'>Add Post</Link>
         </div>
         <div className='content'>
           <ul className='posts'>
@@ -111,8 +133,13 @@ class Category extends Component {
             .map((post) => (
               <li key={post.id} className='post'>
                 <div>
-                  <Link onClick={() => this.handlePostSelection(post)} to='/post'>{post.title}</Link>
-                  <Datetime timestamp={post.timestamp} />
+                  <Actions 
+                    onEdit={() => this.editPost(post)}
+                    onDelete={() => this.deletePost(post)} 
+                  />
+                  <Link onClick={() => this.handlePostSelection(post)} to={`/${post.category}/${post.id}`}>{post.title}</Link>
+                  <small className='post-author'>[{post.author} -</small>
+                  <Datetime timestamp={post.timestamp} />]
                 </div>
                 <p>Comments {post.commentCount}</p>
                 <Vote 
@@ -129,10 +156,14 @@ class Category extends Component {
   }
 }
 
-function mapStateToProps ({ categories, posts }) {
+function mapStateToProps ({ categories, posts }, { match: { params} }) {
+  let selectedCategory = categories.selected;
+  if (params.category) {
+    selectedCategory = { value: params.category, label: capitalize(params.category) };
+  }
   return {
     categories: categories.categories,
-    selectedCategory: categories.selected,
+    selectedCategory,
     posts: posts.posts
   }
 }
@@ -143,7 +174,8 @@ function mapDispatchToProps (dispatch) {
     increaseVotePost: post => dispatch(upVotePost(post)),
     decreaseVotePost: post => dispatch(downVotePost(post)),
     selectPost: post => dispatch(selectPost(post)), 
-    getComments: post => dispatch(fetchComments(post))
+    getComments: post => dispatch(fetchComments(post)),
+    deletePost: post => dispatch(deletePost(post))
   }
 }
 

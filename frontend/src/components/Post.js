@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
-import { Redirect } from 'react-router'
+import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
-import MinusIcon from 'react-icons/lib/fa/minus';
-import EditIcon from 'react-icons/lib/fa/pencil';
 import ArrowLeftIcon from 'react-icons/lib/fa/arrow-circle-left';
+
 import CommentsList from './CommentsList';
 import Vote from './Vote';
 import Datetime from './Datetime';
-import { upVotePost, downVotePost } from '../actions';
-import { CommentForm } from './CommentForm';
+import Actions from './Actions';
+import { upVotePost, downVotePost, deletePost } from '../actions';
+import CommentForm from './CommentForm';
+import { withRouter } from 'react-router-dom';
+import { capitalize } from '../utils/helpers';
 
 class Post extends Component {
 
@@ -19,6 +21,15 @@ class Post extends Component {
 
   showAddComment = () => this.setState({ addingComment: true });
   hideAddComment = () => this.setState({ addingComment: false });
+
+  deletePost = (post) => {
+    this.props.deletePost(post);
+    this.props.history.push('/');
+  }
+
+  editPost = (post) => {
+    this.props.history.push(`/edit/post/${post.id}`);
+  }
 
   render() {
     const { selectedPost, increaseVote, decreaseVote } = this.props;
@@ -32,26 +43,18 @@ class Post extends Component {
       <div className='container'>
         <div className='nav'>
           <Link to='/' className='back-btn'><ArrowLeftIcon size={25}/> Back</Link>
-          <div className='post-btns'>
-            <button title='Edit'
-              className='icon-btn'
-              onClick={() => {}}>
-                <EditIcon size={15}/>
-            </button>|
-            <button title='Delete'
-              className='icon-btn'
-              onClick={() => {}}>
-                <MinusIcon size={15}/>
-            </button>
-          </div>
         </div>
         <div className='content-post'>
+          <Actions 
+            onEdit={() => this.editPost(selectedPost)}
+            onDelete={() => this.deletePost(selectedPost)} 
+          />
           {!selectedPost
             ? <div>No post selected</div> 
             : <div>
-                <h3>{selectedPost.title}</h3>
+                <h3 className='post-category'>{selectedPost.title}</h3><small>[{capitalize(selectedPost.category)}]</small>
                 <p>{selectedPost.body}</p>
-                <p>{selectedPost.author}
+                <p>{selectedPost.author} -
                 <Datetime timestamp={selectedPost.timestamp} />
                 </p>
                 <Vote 
@@ -67,7 +70,7 @@ class Post extends Component {
                   </button>
                 </div>
                 {addingComment && (
-                  <CommentForm onCancel={this.hideAddComment} />
+                  <CommentForm onClose={this.hideAddComment} />
                 )}
                 <CommentsList />
               </div>}
@@ -77,10 +80,11 @@ class Post extends Component {
   }
 }
 
-function mapStateToProps ({ posts }) {
+function mapStateToProps ({ posts, categories }) {
   const post = posts.posts.find(post => post.id === posts.selected.id);
   return {
-    selectedPost: post
+    selectedPost: post,
+    category: categories.selected
   }
 }
 
@@ -88,10 +92,11 @@ function mapDispatchToProps (dispatch) {
   return {
     increaseVote: post => dispatch(upVotePost(post)),
     decreaseVote: post => dispatch(downVotePost(post)),
+    deletePost: post => dispatch(deletePost(post))
   }
 }
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Post);
+)(withRouter(Post));

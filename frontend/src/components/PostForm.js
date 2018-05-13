@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Select from 'react-select';
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import ArrowLeftIcon from 'react-icons/lib/fa/arrow-circle-left';
 import uuidv1 from 'uuid/v1';
+import { savePost, updatePost } from '../actions';
+import { capitalize } from '../utils/helpers';
 
 export class PostForm extends Component {
 
@@ -11,25 +13,52 @@ export class PostForm extends Component {
     title: '',
     author: '',
     body: '',
-    categorySelected: '',
+    category: '',
     voteScore: 1
   }
 
   componentDidMount() {
-    const { category } = this.props;
-    const { categorySelected } = this.state;
-    this.setState({categorySelected: category});
+    const { categorySelected, postSelected } = this.props;
+
+    if (postSelected) {
+      this.setState({
+        id: postSelected.id,
+        title: postSelected.title,
+        body: postSelected.body,
+        category: { value: postSelected.category, label: capitalize(postSelected.category)},
+        author: postSelected.author,
+        voteScore: postSelected.voteScore 
+      });
+    } else if (categorySelected) {
+      this.setState({category: categorySelected});
+    }
   }
 
   handleSubmit = (event) => {
     event.preventDefault();    
-    const { title, author, body, category } = this.state;
-    if (body.length === 0 || category.length === 0) {
+    const { id, title, author, body, category, voteScore } = this.state;
+    if (title.length === 0 || body.length === 0 || !category) {
       return;
     }
-    const authored = author || 'Anonymous';
+    const authored = author.trim() || 'Anonymous';
     const timestamp = Date.now();
-    const uuid = uuidv1();
+    const post = {
+      id: '',
+      timestamp,
+      title: capitalize(title).trim(),
+      body,
+      category: category.value,
+      author: authored,
+      voteScore
+    };
+    if (id) {
+      post.id = id;
+      this.props.updatePost(post);      
+    } else {
+      post.id = uuidv1();
+      this.props.savePost(post);      
+    }
+    this.props.history.push('/');
   }
 
   handleChangeTitle = (event) => {
@@ -44,13 +73,13 @@ export class PostForm extends Component {
     this.setState({ body: event.target.value });
   }
 
-  handleChangeCategory = (categorySelected) => {
-    this.setState({ categorySelected });
+  handleChangeCategory = (category) => {
+    this.setState({ category });
   }
 
   render() {
-    const { categories, category } = this.props;
-    const { title, author, body, categorySelected } = this.state;
+    const { categories, postSelected } = this.props;
+    const { title, author, body, category } = this.state;
 
     return (
       <div className='container'>
@@ -63,7 +92,7 @@ export class PostForm extends Component {
             <label className='label-text-input'>
               Author:
             </label>
-            <input placeholder='Anonymous' className='text-input' type="text" value={author} onChange={this.handleChangeAuthor} />        
+            <input disabled={postSelected} placeholder='Anonymous' className='text-input' type="text" value={author} onChange={this.handleChangeAuthor} />
             <label className='label-text-input'>
               Title:
             </label>
@@ -73,16 +102,19 @@ export class PostForm extends Component {
             </label>
             <textarea className='text-input textarea-input' type="textarea" value={body} onChange={this.handleChangeBody} />        
             <div className='selector-group'>
-            <label className='label-text-input'>
-              Category:
-            </label>
-            <Select className='category-selector'
-              name="form-field-categories"
-              placeholder={'Categories'}
-              value={categorySelected}
-              onChange={this.handleChangeCategory}
-              options={categories}
-            />
+            {!postSelected && 
+              <div> 
+                <label className='label-text-input'>
+                  Category:
+                </label>
+                <Select className='category-selector'
+                  name="form-field-categories"
+                  placeholder={'Categories'}
+                  value={category}
+                  onChange={this.handleChangeCategory}
+                  options={categories}
+                />
+              </div>}
           </div>
             <div className='post-form-btns'>
               <input readOnly className='text-btn text-btn--fixed' type="submit" value="Save" />
@@ -95,19 +127,24 @@ export class PostForm extends Component {
   }
 }
 
-function mapStateToProps ({ categories }) {
+function mapStateToProps ({ posts, categories }, { history, match: { params} }) {
   return {
+    postSelected: posts.selected,
     categories: categories.categories.slice(1),
-    category: categories.selected.value !== 'all' ? categories.selected : ''  
+    categorySelected: categories.selected.value !== 'all' ? categories.selected : '',
+    history,
+    params 
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
+    savePost: post => dispatch(savePost(post)),
+    updatePost: post => dispatch(updatePost(post)),
   }
 }
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(PostForm);
+)(withRouter(PostForm));

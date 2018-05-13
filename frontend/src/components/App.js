@@ -1,23 +1,22 @@
 import React, { Component } from 'react';
-import { Route } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 
 import Category from './Category'; 
 import Post from './Post'; 
 import PostForm from './PostForm';
+import NotFound from './NotFound';
 
 class App extends Component {
   render() {
     return (
       <div>
-        <Route exact path='/' render={() => (
-          <Category />
-        )}/>
-        <Route path='/post' render={() => (
-          <Post />
-        )}/>
-        <Route path='/addpost' render={() => (
-          <PostForm />
-        )}/>
+        <Switch>
+          <Route exact path='/add/new/post' component={PostForm} />
+          <Route exact path='/edit/post/:postId' component={PostForm} />
+          <Route exact path='/:category/:postId' component={Post} />
+          <Route exact path='/:category?' component={Category} />
+          <Route component={NotFound} />
+        </Switch>
       </div>
     )
   }
