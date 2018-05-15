@@ -189,7 +189,7 @@ function mapDispatchToProps (dispatch) {
     getAllPosts: () => dispatch(fetchPosts()),
     getCategoryPosts: () => dispatch(fetchPosts()),
     selectPost: post => dispatch(selectPost(post)),
-    getComments: post => dispatch(fetchComments(post)),
+    getComments: post => dispatch(fetchComments(post.id)),
     deletePost: post => dispatch(deletePost(post))
   }
 }

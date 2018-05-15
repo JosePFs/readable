@@ -13,8 +13,8 @@ export const receiveComments = comments => ({
   comments
 });
 
-export const fetchComments = (post) => dispatch => (
-    ResourcesAPI.getPostComments(post)
+export const fetchComments = (postId) => dispatch => (
+    ResourcesAPI.getPostComments(postId)
     .then(comments => dispatch(receiveComments(comments)))
 );
 
