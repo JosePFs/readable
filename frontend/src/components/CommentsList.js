@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 import Datetime from './Datetime';
 import Vote from './Vote';
 import Comment from './Comment';
-import { upVoteComment, downVoteComment } from '../actions';
+import * as actions from '../actions/commentActions';
 
 export class CommentsList extends Component {
 
   render() {
-    const { comments, increaseVote, decreaseVote } = this.props;
+    const { comments, upVoteComment, downVoteComment } = this.props;
 
     return (
       <ul className='comments-list'>
@@ -22,8 +22,8 @@ export class CommentsList extends Component {
           </p>          
           <Vote 
             item={comment}
-            onIncrease={() => increaseVote(comment)}
-            onDecrease={() => decreaseVote(comment)}
+            onIncrease={() => upVoteComment(comment)}
+            onDecrease={() => downVoteComment(comment)}
           />
         </li>
       ))}
@@ -32,20 +32,13 @@ export class CommentsList extends Component {
   }
 }
 
-function mapStateToProps ({ comments }) {
+function mapStateToProps ({ comment }) {
   return {
-    comments: comments.comments
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    increaseVote: comment => dispatch(upVoteComment(comment)),
-    decreaseVote: comment => dispatch(downVoteComment(comment)),
+    comments: comment.comments
   }
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  actions
 )(CommentsList);

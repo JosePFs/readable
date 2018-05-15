@@ -4,15 +4,15 @@ import { Redirect } from "react-router";
 import { connect } from 'react-redux';
 import Select from 'react-select';
 
+import { selectCategory } from '../actions/categoryActions';
 import { 
-  selectCategory,
   upVotePost,
   downVotePost,
   selectPost,
-  fetchComments,
   deletePost,
   fetchPosts
-} from '../actions';
+} from '../actions/postActions';
+import { fetchComments } from '../actions/commentActions';
 import Vote from './Vote';
 import Datetime from './Datetime';
 import Actions from './Actions';
@@ -168,15 +168,15 @@ class Category extends Component {
   }
 }
 
-function mapStateToProps ({ categories, posts }, { match: { params} }) {
-  let selectedCategory = categories.selected;
+function mapStateToProps ({ category, post }, { match: { params} }) {
+  let selectedCategory = category.selected;
   if (params.category) {
     selectedCategory = { value: params.category, label: capitalize(params.category) };
   }
   return {
-    categories: categories.categories,
+    categories: category.categories,
     selectedCategory,
-    posts: posts.posts,
+    posts: post.posts,
     params
   }
 }

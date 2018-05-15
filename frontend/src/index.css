@@ -55,8 +55,14 @@ li {
   min-width: 150px;
 }
 
+.category-selector-error,
 .category-selector {
   width: 168px;
+}
+
+.category-selector-error {
+  border: 1px solid red;
+  border-radius: 4px;
 }
 
 .not-found-content,
@@ -145,6 +151,10 @@ li {
   line-height: 20px;
 }
 
+.text-input.error {
+  border: 1px solid red;
+}
+
 .post-form .text-input,
 .comment-form .text-input {
   width: 50%;
@@ -195,17 +205,16 @@ li {
   float: right;
 }
 
-.not-found-content {
-  text-align: center;
-  margin-top: 60px;
-}
-
-.not-found {
-  margin: 50px;
-}
-
 .not-found-title {
   color: red;
+}
+
+.not-found-image {
+  width: 470px;
+  height: 380px;
+  display: 'block';
+  margin: 'auto';
+  position: 'relative';
 }
 
 .post-category {

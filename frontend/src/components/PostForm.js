@@ -5,7 +5,7 @@ import { Link, withRouter } from "react-router-dom";
 import ArrowLeftIcon from 'react-icons/lib/fa/arrow-circle-left';
 import uuidv1 from 'uuid/v1';
 
-import { savePost, updatePost } from '../actions';
+import { savePost, updatePost } from '../actions/postActions';
 import { capitalize } from '../utils/helpers';
 
 export class PostForm extends Component {
@@ -15,7 +15,8 @@ export class PostForm extends Component {
     author: '',
     body: '',
     category: '',
-    voteScore: 1
+    voteScore: 1,
+    submitted: false
   }
 
   componentDidMount() {
@@ -36,7 +37,8 @@ export class PostForm extends Component {
   }
 
   handleSubmit = (event) => {
-    event.preventDefault();    
+    event.preventDefault();
+    this.setState({submitted: true});
     const { id, title, author, body, category, voteScore } = this.state;
     if (title.length === 0 || body.length === 0 || !category) {
       return;
@@ -80,7 +82,7 @@ export class PostForm extends Component {
 
   render() {
     const { categories, postSelected } = this.props;
-    const { title, author, body, category } = this.state;
+    const { title, author, body, category, submitted } = this.state;
 
     return (
       <div className='container'>
@@ -97,18 +99,19 @@ export class PostForm extends Component {
             <label className='label-text-input'>
               Title:
             </label>
-            <input className='text-input' type="text" value={title} onChange={this.handleChangeTitle} />        
+            <input className={'text-input' + (submitted && title.length === 0 ? ' error' : '')} type="text" value={title} onChange={this.handleChangeTitle} />        
             <label className='label-text-input'>
               Body:
             </label>
-            <textarea className='text-input textarea-input' type="textarea" value={body} onChange={this.handleChangeBody} />        
+            <textarea className={'text-input textarea-input' + (submitted && body.length === 0 ? ' error' : '')} type="textarea" value={body} onChange={this.handleChangeBody} />        
             <div className='selector-group'>
             {!postSelected && 
               <div> 
                 <label className='label-text-input'>
                   Category:
                 </label>
-                <Select className='category-selector'
+                <Select 
+                  className={submitted && !category ? 'category-selector-error' : 'category-selector'}
                   name="form-field-categories"
                   placeholder={'Categories'}
                   value={category}
@@ -128,11 +131,11 @@ export class PostForm extends Component {
   }
 }
 
-function mapStateToProps ({ posts, categories }, { history, match: { params} }) {
+function mapStateToProps ({ post, category }, { history, match: { params} }) {
   return {
-    postSelected: posts.selected,
-    categories: categories.categories.slice(1),
-    categorySelected: categories.selected.value !== 'all' ? categories.selected : '',
+    postSelected: post.selected,
+    categories: category.categories.slice(1),
+    categorySelected: category.selected.value !== 'all' ? category.selected : '',
     history,
     params 
   }

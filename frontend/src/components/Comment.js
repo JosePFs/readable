@@ -4,13 +4,14 @@ import CloseIcon from 'react-icons/lib/fa/close';
 import SaveIcon from 'react-icons/lib/fa/floppy-o';
 
 import Actions from './Actions';
-import { deleteComment, updateComment } from '../actions';
+import * as actions from '../actions/commentActions';
 
 class Comment extends Component {
 
   state = {
     body: '',
-    editing: false
+    editing: false,
+    submitted: false
   }
 
   componentDidMount() {
@@ -22,8 +23,12 @@ class Comment extends Component {
   }
 
   update = (comment) => {
+    if (this.state.body.length === 0) {
+      this.setState({submitted: true});      
+      return;
+    }
     this.props.updateComment({id: comment.id, body: this.state.body, timestamp: Date.now()});
-    this.setState({editing: false});
+    this.setState({editing: false, submitted: false});
   }
 
   close = () => {
@@ -34,9 +39,33 @@ class Comment extends Component {
     this.setState({body: event.target.value});
   }
 
+  getContent = () => {
+    const { comment } = this.props;
+    const { editing, body, submitted } = this.state;
+
+    if (editing) {
+      return (
+        <div className='post-form'>
+          <input autoFocus className={'text-input' + (submitted && body.length === 0 ? ' error' : '')} type="text" onChange={this.handleChangeBody} value={body} />
+          <button title='Save'
+            className='icon-btn'
+            onClick={() => this.update(comment)}>
+              <SaveIcon size={20}/>
+          </button>
+          <button title='Close'
+            className='icon-btn'
+            onClick={() => this.close()}>
+              <CloseIcon size={20}/>
+          </button>
+        </div>
+      );
+    } else {
+      return <p>{body}</p>;
+    }
+  }
+
   render() {
     const { comment, deleteComment } = this.props;
-    const { editing, body } = this.state;
 
     return (
       <div>
@@ -44,22 +73,7 @@ class Comment extends Component {
           onEdit={() => this.editComment(comment)}
           onDelete={() => deleteComment(comment)} 
         />
-        {editing
-          ? <div className='post-form'>
-              <input autoFocus className='text-input' type="text" onChange={this.handleChangeBody} value={body} />
-              <button title='Save'
-                className='icon-btn'
-                onClick={() => this.update(comment)}>
-                  <SaveIcon size={20}/>
-              </button>
-              <button title='Close'
-                className='icon-btn'
-                onClick={() => this.close()}>
-                  <CloseIcon size={20}/>
-              </button>
-            </div>
-          : <p>{body}</p> 
-        }
+        {this.getContent()}
       </div>
     );
   }
@@ -71,14 +85,7 @@ function mapStateToProps ({ comments }, {comment}) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
-  return {
-    deleteComment: comment => dispatch(deleteComment(comment)),    
-    updateComment: comment => dispatch(updateComment(comment)),    
-  }
-}
-
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  actions
 )(Comment);

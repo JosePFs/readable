@@ -8,7 +8,7 @@ import CommentsList from './CommentsList';
 import Vote from './Vote';
 import Datetime from './Datetime';
 import Actions from './Actions';
-import { upVotePost, downVotePost, deletePost, getPost } from '../actions';
+import { upVotePost, downVotePost, deletePost, getPost } from '../actions/postActions';
 import CommentForm from './CommentForm';
 import { capitalize } from '../utils/helpers';
 
@@ -84,10 +84,10 @@ class Post extends Component {
   }
 }
 
-function mapStateToProps ({ posts, categories }, { match: { params } }) {
+function mapStateToProps ({ post, category }, { match: { params } }) {
   return {
-    selectedPost: posts.selected,
-    category: categories.selected,
+    selectedPost: post.selected,
+    category: category.selected,
     params
   }
 }

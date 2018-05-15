@@ -7,7 +7,7 @@ import thunk from 'redux-thunk';
 
 import './index.css';
 import App from './components/App';
-import { fetchCategories } from './actions';
+import { fetchCategories } from './actions/categoryActions';
 import reducer from './reducers';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
